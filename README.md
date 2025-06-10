@@ -413,3 +413,25 @@ If your candidate PRs have elements of these it doesn't mean they won't get merg
 ## License
 
 MIT
+
+## Performance Profiling with gprof
+
+To profile the CPU execution of `runq`, use `gprof`:
+
+### Step 1: Recompile with profiling enabled
+```bash
+make clean
+gcc -pg -O2 -o runq runq.c -lm
+```
+
+### Step 2: Run the program
+make sure the modelq.bin has been added in the same directory, then run: 
+```bash
+./runq modelq.bin -t 0.8 -n 256 -i "Your prompt here"
+```
+### Step 3: Analyze with gprof
+```bash
+gprof ./runq gmon.out > analysis.txt
+less analysis.txt
+```
+
