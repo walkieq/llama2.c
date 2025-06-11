@@ -435,3 +435,55 @@ gprof ./runq gmon.out > analysis.txt
 less analysis.txt
 ```
 
+## Memory Profiling with Valgrind Massif
+Valgrind can track the memory usage throughout the entire inference lifecycle, including model loading, tokenization, sampling, and all supporting functions invoked before the main inference loop.
+It provides detailed breakdowns of heap allocations per function, helping identify memory bottlenecks and peak usage locations.
+
+### Step 0: Ensure Valgrind is available
+On ccgpu5, Valgrind has already been installed and added to the environment variable:
+```bash
+which valgrind
+```
+
+You can skip the installation step if this path is valid.
+If not Installed, Manual Installation:
+```bash
+wget https://sourceware.org/pub/valgrind/valgrind-3.21.0.tar.bz2
+tar -xvf valgrind-3.21.0.tar.bz2
+cd valgrind-3.21.0
+./configure --prefix=$HOME/tools/valgrind
+make -j
+make install
+```
+
+Then add it to your environment:
+```bash
+echo 'export PATH=$HOME/tools/valgrind/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+```
+
+### Step 1: Compile the inference binary (without profiling flags)
+```bash
+gcc -O2 -o runq_nomassif runq.c -lm
+```
+
+### Step 2: Run Valgrind Massif
+```bash
+valgrind --tool=massif --pages-as-heap=yes ./runq_nomassif modelq.bin -t 0.8 -n 1024 -i "Your Prompt Here"
+```
+This will produce a file like:
+```csharp
+massif.out.<pid>
+```
+
+### Step 3: View memory usage summary
+```bash
+ms_print massif.out.<pid> > mem_profile.txt
+less mem_profile.txt
+```
+
+You’ll be able to observe:
+Peak heap usage (in bytes)
+Which point in time memory was consumed most
+Allocation call traces (if needed)
+
