@@ -464,7 +464,7 @@ source ~/.bashrc
 
 ### Step 1: Compile the inference binary (without profiling flags)
 ```bash
-gcc -O2 -o runq_nomassif runq.c -lm
+gcc -O3 -o runq_nomassif runq.c -lm
 ```
 
 ### Step 2: Run Valgrind Massif
