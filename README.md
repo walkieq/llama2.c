@@ -421,7 +421,7 @@ To profile the CPU execution of `runq`, use `gprof`:
 ### Step 1: Recompile with profiling enabled
 ```bash
 make clean
-gcc -pg -O2 -o runq runq.c -lm
+gcc -pg -O3 -o runq runq.c -lm
 ```
 
 ### Step 2: Run the program
